@@ -45,11 +45,27 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1669687925479</updated>
-      <workItem from="1669687928844" duration="16379000" />
+      <workItem from="1669687928844" duration="24833000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook:///Users/chanyoungpark/Documents/GitHub/tree/codde.ipynb</url>
+          <line>66</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="jupyter-line">
+          <url>notebook:///Users/chanyoungpark/Documents/GitHub/tree/codde.ipynb</url>
+          <line>70</line>
+          <option name="timeStamp" value="7" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
