@@ -1,4 +1,4 @@
-# tree
+# Decision Tree and its Ensemble Model, Random Forests
 
 ## 1. Introduction
 
@@ -6,22 +6,28 @@
 ## 2. Method
 
 
-### 1) Decision tree
+### 1) Decision Tree
 
 
 ### 2) Bagging
 
+Bagging은 Bootstrap과 Aggregating을 합친 말입니다. Bootstrap은 전체 N개의 데이터셋에서 샘플을 그 크기가 N개가 될 때 까지 복원추출하는 방식입니다. 이렇게 샘플링을 할 경우 샘플링이 되지 않은 데이터가 존재하게 되는데 이들의 집합을 Out of Bag(OOB) 데이터라고 합니다. 이론적으로 어떠한 샘플이 bootstrap을 통해 샘플링 되지 않을 확률 $p$는 다음과 같습니다.
+
+$$
+p=(1-\frac{1}{N})^N \rightarrow \lim_{N\rightarrow \infty}(1-\frac{1}{N})^N = e^{-1} \approx 0.368
+$$
+
+Aggregating은 bootstrap을 통해 생성된 데이터들을 개별의 여러 모델에 학습 시킨 후 그 결과들을 합쳐주는 과정입니다. Aggregating 방법에는 대표적으로 3가지가 있는데, 첫번째로는 어떠한 값을 예측할 때 가장 많은 모델이 예측한 값을 사용하는 majority voting, 두번째로는 majority voting에서 해당 값의 예측확률이나 해당 모델의 accuracy 등을 가중치로 곱하여 보정하는 weighted voting, 마지막으로는 base learner들이 예측한 값들을 새로운 모델의 input로 넣어 최종 값을 출력하는 stacking이 있습니다.
+
+<p align="center"> <img src="https://github.com/cyp-ark/tree/blob/main/figure/figure1.png?raw=true">
 
 ### 3) Random Forests
 
+Random Forests는 base learner로 Decision Tree를 사용해 bagging을 통해 만든 앙상블 모델입니다. Bootstrap을 통해 다양한 샘플을 만들고 개별 모델을 학습 시킨 후 각 모델의 결과를 aggregate해 해당 모델의 최종 output을 산출하게 됩니다.
 
-<!--
-### 4) Boosting
+<p align="center"> <img src="https://ars.els-cdn.com/content/image/1-s2.0-S0301420718306901-gr3.jpg">
 
-
-### 5) Tree-based Gradient Boosting Machine
--->
-
+Random Forests가 모델의 다양성을 확보하기 위해 사용한 방법은 첫번째로 bootstrap을 통한 데이터의 다양성, 두번째로는 분기에 대한 변수 제한입니다. 
 
 ## 3. Tutorial
 
@@ -42,6 +48,7 @@ plt.scatter('x1','x2',c='class',data=df)
 ```
 <p align="center"> <img src="https://github.com/cyp-ark/tree/blob/main/figure/plot1.png?raw=true" width="40%" height="40%" >
 
+### 2) Decision Tree
 
 ```python
 #Decision Tree 생성
@@ -59,9 +66,10 @@ pred = clf.predict(X_test)
 accuracy_score(y_test,pred)
 ```
 
+<p align="center"> <img src="https://github.com/cyp-ark/tree/blob/main/figure/plot2.png?raw=true" width="40%" height="40%" >
 
 
-### 2) Random Forests using Decision tree
+### 3) Random Forests using Decision tree
 
 ```python
 #Bootstraping
