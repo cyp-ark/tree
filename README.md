@@ -70,6 +70,8 @@ plt.scatter('x1','x2',c='class',data=df)
 
 ### 2) Decision Tree
 
+위의 데이터셋을 Decision Tree를 통해 제대로 분류 할 수 있는지 확인해보겠습니다. 모델은 Scikit learn 패키지를 이용했습니다.
+
 ```python
 from sklearn import tree
 from sklearn.model_selection import train_test_split
@@ -92,8 +94,11 @@ accuracy_score(y_test,pred)
 
 <p align="center"> <img src="https://github.com/cyp-ark/tree/blob/main/figure/plot2.png?raw=true" width="40%" height="40%" >
 
+Test set에 대한 분류 결과와 분류 경계면을 살펴보면 상당히 잘 나누어진 것을 확인할 수 있습니다. 그렇다면 다음은 이 모델을 앙상블 학습시켜 Random Forests로 만들었을 때의 결과와 비교해보도록 하겠습니다.
 
 ### 3) Random Forests using Decision tree
+
+Random Forests는 Decision Tree를 base learner로 사용해 bagging 기법으로 앙상블 학습을 진행한 모델입니다. 우선 bagging의 첫단인 bootstrap부터 정의해주도록 하겠습니다.
 
 ```python
 from sklearn.utils import resample
@@ -103,6 +108,8 @@ def bootstrap(X):
     Y = resample(X,replace=True,n_samples=len(X))
     return Y
 ```
+
+다음은 Random Forests를 만들 차례입니다. 함수는 input으로 데이터와 Random Forests를 구성할 tree의 개수를 input으로 받습니다. 데이터가 입력이 되면 train set, test set으로 나눕니다. 이후 각각의 개별 모델에 대해 train set에서 bootstrap을 통해 샘플링 한 후 해당 bootstrap으로 모델 학습을 진행합니다. 이 때 모델의 분기에 사용되는 변수의 개수는 전체 변수 N개에 대해 $\sqrt{N}$개 입니다. 이후 test set에서 개별 모델에 대해 predict를 진행 한 후 이를 vote라는 이름의 list에 저장합니다. 이후 각 y_test값에 대해 majority voting을 진행해 최종 output을 출력합니다.
 
 ```python
 def rf(df,T):
@@ -140,6 +147,8 @@ def rf(df,T):
 
 ```
 
+그렇다면 과연 실제로 단일모델인 Decision Tree보다 이를 앙상블 학습을 한 Random Forests가 더 정답을 잘 맞출까요? 이에 대한 결과는 아래와 같습니다.
+
 | N       | 1      | 2      | 3      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 10     |
 |---------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | RF      | 0.9231 | 0.9510 | 0.9720 | 0.9580 | 0.9510 | 0.9790 | 0.9860 | 0.9790 | 0.9301 | 0.9580 | 0.9650 |
@@ -147,11 +156,15 @@ def rf(df,T):
 | std(DT) | 0.0244 | 0.0208 | 0.0176 | 0.0213 | 0.0221 | 0.0232 | 0.0226 | 0.0215 | 0.0204 | 0.0271 | 0.0222 |
 
 
-개별 Decision Tree들의 accuracy와 이를 앙상블 한 Random Forests의 accuracy를 비교해보자면, 개별 Decision Tree는 $0.9160\pm0.0116$, Random Forests는 $0.9593\pm0.0200$로 개별 모델의 성능보다 이를 앙상블한 모델이 더 성능이 좋아짐을 확인할 수 있다.
+개별 Decision Tree들의 accuracy와 이를 앙상블 한 Random Forests의 accuracy를 비교해보자면, 개별 Decision Tree는 $0.9160\pm0.0116$, Random Forests는 $0.9593\pm0.0200$로 개별 모델의 성능보다 이를 앙상블한 모델이 더 성능이 좋아짐을 확인할 수 있습니다. 즉 우리는 단일모델보다 이를 앙상블학습을 통해 만든 모델이 더 정답을 잘 맞춤을 알 수 있습니다.
 
 ## 4. Application
 
+다음은 좀 더 많은 변수를 가지고 있는 데이터셋에 대해 모델을 학습해 보도록 하겠습니다.
+
 ### 1) Breast cancer Winsonsin diagnostic dataset
+
+사용할 데이터는 Breast cancer Wisconsin diagnostic dataset으로 위스콘신 유방암 진단 데이터입니다. 해당 데이터는 30개의 변수와 1개의 타겟 변수(악성, 양성)으로 이루어져 있으며 총 569개의 샘플로 구성되어 있습니다. 해당 데이터셋은 다음과 같은 코드를 통해 불러올 수 있습니다.
 
 ```python
 #Breast cancer Wisconsin diagnostic dataset
@@ -164,6 +177,13 @@ target=pd.DataFrame(load_df.target)
 target.columns=['target']
 df = pd.concat([data,target],axis=1)
 ```
+
+앞서 우리가 만든 Random Forests 모델에서 tree의 개수를 150개로 설정해 예측을 할 경우 accuracy는 $0.9692\pm 0.0129$로 상당히 높은 확률로 정답으로 분류하는 것을 알 수 있다. Random Forests 모델을 처음 제시한 저자들의 경우 tree의 개수는 150~200개가 적절하다고 한다. 그렇다면 tree의 개수를 더 많게 혹은 더 적게 사용했을 경우 어떠한 결과가 나올까? 한번 실험적으로 진행해보도록 하겠다.
+
+### 2) Random Forests의 tree 개수 조절
+
+실험할 tree의 개수는 10,20,30,40,50,60,70,80,90,100,125,150,200,250,300,400,500개 이다.
+
 
 ## 5. Conclusion
 
