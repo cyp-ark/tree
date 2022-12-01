@@ -1,7 +1,9 @@
 # Decision Tree and its Ensemble Model, Random Forests
 
 ## 1. Introduction
+시간이 지남에 따라 다양한 머신러닝 알고리즘이 제안되어 왔지만, 절대적으로 성능이 우수한 모델이 무엇이냐 라고 물어본다면 제대로 대답할 수 있는 사람은 아마 없을 것이다. 물론 보편적으로 어떤 모델이 다른 모델보다 대체적으로 성능이 좋게 나온다 라고는 할 수 있겠지만, 경험적인 측면에서 
 
+이번 튜토리얼에는 Decision Tree와 이를 bagging을 통해 앙상블 기법을 적용한 모델인 Random Forests에 대해 알아보고, Random Forests를 Decision Tree를 이용해 구현하는 시간을 가져보도록 하겠습니다.
 
 ## 2. Method
 
@@ -19,7 +21,7 @@ $$
 
 Aggregating은 bootstrap을 통해 생성된 데이터들을 개별의 여러 모델에 학습 시킨 후 그 결과들을 합쳐주는 과정입니다. Aggregating 방법에는 대표적으로 3가지가 있는데, 첫번째로는 어떠한 값을 예측할 때 가장 많은 모델이 예측한 값을 사용하는 majority voting, 두번째로는 majority voting에서 해당 값의 예측확률이나 해당 모델의 accuracy 등을 가중치로 곱하여 보정하는 weighted voting, 마지막으로는 base learner들이 예측한 값들을 새로운 모델의 input로 넣어 최종 값을 출력하는 stacking이 있습니다.
 
-<p align="center"> <img src="https://github.com/cyp-ark/tree/blob/main/figure/figure1.png?raw=true">
+<p align="center"> <img src="https://github.com/cyp-ark/tree/blob/main/figure/figure1.png?raw=true" width="60%" height="60%">
 
 ### 3) Random Forests
 
@@ -51,6 +53,10 @@ plt.scatter('x1','x2',c='class',data=df)
 ### 2) Decision Tree
 
 ```python
+from sklearn import tree
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
 #Decision Tree 생성
 clf = tree.DecisionTreeClassifier()
 
@@ -72,6 +78,8 @@ accuracy_score(y_test,pred)
 ### 3) Random Forests using Decision tree
 
 ```python
+from sklearn.utils import resample
+
 #Bootstraping
 def bootstrap(X):
     Y = resample(X,replace=True,n_samples=len(X))
